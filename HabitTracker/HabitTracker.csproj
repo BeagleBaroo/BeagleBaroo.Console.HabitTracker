@@ -6,7 +6,14 @@
     <ImplicitUsings>true</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="HabitTracker.Data" />
+    <Using Include="HabitTracker.Menus" />
     <Using Include="System.Text" />
   </ItemGroup>
 </Project>

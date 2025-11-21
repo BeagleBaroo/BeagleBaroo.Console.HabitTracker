@@ -1,6 +1,6 @@
 namespace HabitTracker.Menus;
 
-public abstract class MainMenu : AbstractMenu
+public class MainMenu : AbstractMenu
 {
     public override void GenerateMenuText()
     {

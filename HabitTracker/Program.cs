@@ -4,11 +4,10 @@ class Program
 {
     static void Main(string[] args)
     {
-        MainMenu();
-    }
+        Database database = new Database();
+        AbstractMenu mainMenu = new MainMenu();
 
-    static void MainMenu()
-    {
-
+        Console.ReadLine();
+        database.Dispose();
     }
 }
