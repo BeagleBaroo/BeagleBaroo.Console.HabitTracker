@@ -1,7 +1,7 @@
-﻿namespace HabitTracker.Menus
+﻿namespace HabitTracker.Menus;
+
+public interface IMenu
 {
-    public interface IMenu
-    {
-        public abstract void GenerateMenuText();
-    }
+    public abstract void GenerateMenuText();
 }
+

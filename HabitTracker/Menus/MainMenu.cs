@@ -1,13 +1,10 @@
-using System;
-using System.Text;
+namespace HabitTracker.Menus;
 
-namespace HabitTracker.Menus
+public abstract class MainMenu : AbstractMenu
 {
-    public abstract class MainMenu : AbstractMenu
+    public override void GenerateMenuText()
     {
-        public override void GenerateMenuText()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-        }
+        StringBuilder stringBuilder = new StringBuilder();
     }
 }
+

@@ -1,17 +1,14 @@
-﻿using System;
+﻿namespace HabitTracker;
 
-namespace HabitTracker
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            MainMenu();
-        }
+        MainMenu();
+    }
 
-        static void MainMenu()
-        {
-            
-        }
+    static void MainMenu()
+    {
+
     }
 }

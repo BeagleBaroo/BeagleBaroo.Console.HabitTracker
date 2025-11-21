@@ -1,15 +1,13 @@
-﻿using System;
+﻿namespace HabitTracker.Menus;
 
-namespace HabitTracker.Menus
+public abstract class AbstractMenu : IMenu
 {
-    public abstract class AbstractMenu : IMenu
+    protected string? MenuText { get; set; }
+    protected void PrintMenuText()
     {
-        protected string? MenuText { get; set; }
-        protected void PrintMenuText()
-        {
-            Console.WriteLine(MenuText ?? "");
-        }
-
-        public abstract void GenerateMenuText();
+        Console.WriteLine(MenuText ?? "");
     }
+
+    public abstract void GenerateMenuText();
 }
+
