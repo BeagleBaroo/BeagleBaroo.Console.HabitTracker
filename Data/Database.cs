@@ -29,19 +29,91 @@ public class Database
     {
         if (File.Exists(_dbFilePath) is false)
         {
-            string createString = @"DROP TABLE IF EXISTS Habit; CREATE TABLE habits (habit_id integer [PRIMARY KEY], habit_text [NOT NULL], quantity integer [NOT NULL], date_of_habit text [NOT NULL]);";
+            string createDatabaseString = @"DROP TABLE IF EXISTS Habit; CREATE TABLE habits (id integer [PRIMARY KEY], description [NOT NULL], quantity integer [NOT NULL], date text [NOT NULL]);";
             // Create the DB if it does not exist
+            SqliteCommand sqliteCommand = new SqliteCommand(createDatabaseString);
+            ExecuteNonQuery(sqliteCommand);
+        }
+    }
+
+    public void Create(string description, int quantity, string date)
+    {
+        string createString = "INSERT INTO Habit (description, quantity, date) VALUES (@description, @quantity, @date)";
+
+        SqliteCommand sqliteCommand = new SqliteCommand(createString);
+        sqliteCommand.Parameters.AddWithValue("@description", description);
+        sqliteCommand.Parameters.AddWithValue("@quantity", quantity);
+        sqliteCommand.Parameters.AddWithValue("@date", date);
+
+        ExecuteNonQuery(sqliteCommand);
+    }
+
+    public List<Habit> Read()
+    {
+        List<Habit> habits = new List<Habit>();
+        using (SqliteConnection sqliteConnection = new SqliteConnection(_connectionString))
+        {
+            string readString = "SELECT * FROM Habit";
+            SqliteCommand sqliteCommand = new SqliteCommand(readString, sqliteConnection);
+            try
+            {
+                sqliteConnection.Open();
+                using (var reader = sqliteCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        habits.Add(new Habit
+                        {
+                            Id = reader.GetInt32(0),
+                            Description = reader.GetString(1),
+                            Quantity = reader.GetInt32(2),
+                            Date = reader.GetString(3)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteErrorToLog(ex);
+            }
+        }
+        return habits;
+    }
+
+    public void Update(Habit habit)
+    {
+        string updateString = "UPDATE Habit SET description = @description, quantity = @quantity, date = @date WHERE id = @Id";
+
+        SqliteCommand sqliteCommand = new SqliteCommand(updateString);
+        sqliteCommand.Parameters.AddWithValue("@description", habit.Description);
+        sqliteCommand.Parameters.AddWithValue("@quantity", habit.Quantity);
+        sqliteCommand.Parameters.AddWithValue("@date", habit.Date);
+        sqliteCommand.Parameters.AddWithValue("@Id", habit.Id);
+
+        ExecuteNonQuery(sqliteCommand);
+    }
+
+    public void Delete(Habit habit)
+    {
+        string deleteString = "DELETE Habit WHERE id = @Id";
+
+        SqliteCommand sqliteCommand = new SqliteCommand(deleteString);
+        sqliteCommand.Parameters.AddWithValue("@Id", habit.Id);
+
+        ExecuteNonQuery(sqliteCommand);
+    }
+
+    private void ExecuteNonQuery(SqliteCommand sqliteCommand)
+    {
+        if (string.IsNullOrWhiteSpace(sqliteCommand.CommandText) is false)
+        {
             using (SqliteConnection sqliteConnection = new SqliteConnection(_connectionString))
             {
-                SqliteCommand sqliteCommand = new(createString, sqliteConnection);
+                sqliteCommand.Connection = sqliteConnection;
                 try
                 {
                     sqliteConnection.Open();
-                    using (var command = sqliteConnection.CreateCommand())
-                    {
-                        command.CommandText = createString;
-                        command.ExecuteNonQuery();
-                    }
+                    sqliteCommand.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
