@@ -6,6 +6,7 @@ class Program
     {
         Database database = new Database();
         AbstractMenu mainMenu = new MainMenu();
+        mainMenu.Run();
 
         Console.ReadLine();
         database.Dispose();
