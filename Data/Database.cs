@@ -29,21 +29,21 @@ public class Database
     {
         if (File.Exists(_dbFilePath) is false)
         {
-            string createDatabaseString = @"DROP TABLE IF EXISTS Habit; CREATE TABLE habits (id integer [PRIMARY KEY], description [NOT NULL], quantity integer [NOT NULL], date text [NOT NULL]);";
+            string createDatabaseString = @"CREATE TABLE habits (id INTEGER PRIMARY KEY, description NOT NULL, quantity integer NOT NULL, date text NOT NULL);";
             // Create the DB if it does not exist
             SqliteCommand sqliteCommand = new SqliteCommand(createDatabaseString);
             ExecuteNonQuery(sqliteCommand);
         }
     }
 
-    public void Create(string description, int quantity, string date)
+    public void Create(Habit habit)
     {
-        string createString = "INSERT INTO Habit (description, quantity, date) VALUES (@description, @quantity, @date)";
+        string createString = "INSERT INTO habits (description, quantity, date) VALUES (@description, @quantity, @date)";
 
         SqliteCommand sqliteCommand = new SqliteCommand(createString);
-        sqliteCommand.Parameters.AddWithValue("@description", description);
-        sqliteCommand.Parameters.AddWithValue("@quantity", quantity);
-        sqliteCommand.Parameters.AddWithValue("@date", date);
+        sqliteCommand.Parameters.AddWithValue("@description", habit.Description);
+        sqliteCommand.Parameters.AddWithValue("@quantity", habit.Quantity);
+        sqliteCommand.Parameters.AddWithValue("@date", habit.Date);
 
         ExecuteNonQuery(sqliteCommand);
     }
@@ -82,7 +82,7 @@ public class Database
 
     public void Update(Habit habit)
     {
-        string updateString = "UPDATE Habit SET description = @description, quantity = @quantity, date = @date WHERE id = @Id";
+        string updateString = "UPDATE habits SET description = @description, quantity = @quantity, date = @date WHERE id = @Id";
 
         SqliteCommand sqliteCommand = new SqliteCommand(updateString);
         sqliteCommand.Parameters.AddWithValue("@description", habit.Description);
