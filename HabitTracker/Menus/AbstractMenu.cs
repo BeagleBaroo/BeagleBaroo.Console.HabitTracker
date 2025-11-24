@@ -2,32 +2,35 @@
 
 public abstract class AbstractMenu
 {
-    public AbstractMenu()
+    protected Database Database;
+    public AbstractMenu(Database database)
     {
-        ValidMenuOptions = new List<string>();
+        Database = database;
+        ValidOptions = new List<string>();
     }
     protected string? MenuText { get; set; }
-    protected List<string> ValidMenuOptions;
+    protected List<string> ValidOptions;
     protected void PrintMenuText()
     {
         Console.WriteLine(MenuText ?? "");
     }
 
-    protected string GetSelectedMenuOption()
+    protected string GetUserInput(List<string>? validOptions = null)
     {
-        string selectedMenuOption = Console.ReadLine() ?? "";
-        while (ValidMenuOptions.Contains(selectedMenuOption) is false)
+        string userInput = Console.ReadLine() ?? "";
+        if (validOptions is not null && validOptions.Count > 0)
         {
-            Console.WriteLine("\nOops! That is not a valid option, please try again:\n");
-            selectedMenuOption = Console.ReadLine() ?? "";
+            while (validOptions.Contains(userInput) is false)
+            {
+                Console.WriteLine("\nOops! That is not a valid option, please try again:\n");
+                userInput = (Console.ReadLine() ?? "").ToLowerInvariant();
+            }
         }
-
-        return selectedMenuOption;
-
+        return userInput;
     }
 
     public abstract void Run();
-    protected abstract void GetMenuText();
+    protected abstract void GetMenuText(string option = "");
     protected abstract void GetNextMenu(string selectedMenuOption);
 }
 

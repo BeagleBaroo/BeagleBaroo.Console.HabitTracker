@@ -2,22 +2,27 @@ namespace HabitTracker.Menus;
 
 public class MainMenu : AbstractMenu
 {
-    public MainMenu()
+    private NewHabitMenu _newHabitMenu;
+    private EditHabitMenu _editHabitMenu;
+    public MainMenu(Database database) : base(database)
     {
-        ValidMenuOptions.Add("a");
-        ValidMenuOptions.Add("v");
-        ValidMenuOptions.Add("x");
+        ValidOptions.Add("a");
+        ValidOptions.Add("v");
+        ValidOptions.Add("x");
+
+        _newHabitMenu = new NewHabitMenu(database);
+        _editHabitMenu = new EditHabitMenu(database);
     }
 
     public override void Run()
     {
         GetMenuText();
         PrintMenuText();
-        string selectedMenuOption = GetSelectedMenuOption();
+        string selectedMenuOption = GetUserInput(ValidOptions);
         GetNextMenu(selectedMenuOption);
     }
 
-    protected override void GetMenuText()
+    protected override void GetMenuText(string option = "")
     {
         Console.Clear();
         StringBuilder stringBuilder = new StringBuilder();
@@ -33,15 +38,17 @@ public class MainMenu : AbstractMenu
         switch (selectedMenuOption)
         {
             case "a":
-                AbstractMenu newHabitMenu = new NewHabitMenu();
+                _newHabitMenu.Run();
+                Run();
                 break;
             case "v":
-                AbstractMenu editHabitMenu = new EditHabitMenu();
+                _editHabitMenu.Run();
+                Run();
                 break;
             case "x":
                 break;
             default:
-                GetMenuText();
+                Run();
                 break;
         }
     }
