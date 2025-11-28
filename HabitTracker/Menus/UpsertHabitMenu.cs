@@ -131,7 +131,7 @@ public class UpsertHabitMenu : AbstractMenu
         stringBuilder.Append($"Type \"x\" followed by enter to return to the main menu\n");
     }
 
-    protected override void GetNextMenu(string selectedMenuOption)
+    protected override void GetNextMenu(string selectedMenuOption, string action = "")
     {
         throw new NotImplementedException();
     }

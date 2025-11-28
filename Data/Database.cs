@@ -96,7 +96,7 @@ public class Database
 
     public void Delete(Habit habit)
     {
-        string deleteString = "DELETE Habit WHERE id = @Id";
+        string deleteString = "DELETE FROM Habits WHERE id = @Id";
         SqliteCommand sqliteCommand = new SqliteCommand(deleteString);
         sqliteCommand.Parameters.AddWithValue("@Id", habit.Id);
 

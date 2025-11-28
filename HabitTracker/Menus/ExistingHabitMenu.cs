@@ -1,4 +1,6 @@
 
+using System.Runtime.CompilerServices;
+
 namespace HabitTracker.Menus;
 
 public class ExistingHabitMenu : AbstractMenu
@@ -20,8 +22,14 @@ public class ExistingHabitMenu : AbstractMenu
         PrintMenuText();
 
         ValidOptions.Add("x");
-        string selectedMenuOption = GetUserInput();
-        GetNextMenu(selectedMenuOption);
+        string selectedMenuOption = GetUserInput(ValidOptions);
+
+        ValidOptions.RemoveAll(vo => vo is not "x");
+        GetActionText();
+        PrintMenuText();
+        string action = GetUserInput(ValidOptions);
+
+        GetNextMenu(selectedMenuOption, action);
     }
 
     protected override void GetMenuText(string option = "")
@@ -31,11 +39,12 @@ public class ExistingHabitMenu : AbstractMenu
 
         if (_existingHabits.Count == 0)
         {
-            stringBuilder.Append($"There are no habits to view/edit, pleas press \"x\" folowed by enter to return to the main menu:\n");
+            stringBuilder.Append($"There are no habits to view/edit/delete, please press \"x\" folowed by enter to return to the main menu:\n");
         }
         else
         {
-            stringBuilder.Append($"Please type the nuber of the of the habit you wish to edit, followed by enter or press \"x\" folowed by enter to return to the main menu:\n");
+            stringBuilder.Append($"Please type the nuber of the of the habit you wish to edit/delete followed by enter or press\n");
+            stringBuilder.Append("Or press \"x\" folowed by enter to return to the main menu:\n");
             for (int i = 0; i < _existingHabits.Count; i++)
             {
                 ValidOptions.Add((i + 1).ToString());
@@ -45,15 +54,38 @@ public class ExistingHabitMenu : AbstractMenu
         MenuText = stringBuilder.ToString();
     }
 
-    protected override void GetNextMenu(string selectedMenuOption)
+    private void GetActionText()
+    {
+        Console.Clear();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append($"Please select one of the following actions: \n");
+        stringBuilder.Append($"Type \"e\" followed by enter to add edit this habit\n");
+        stringBuilder.Append($"Type \"d\" followed by enter to delete this habit\n");
+        stringBuilder.Append($"Type \"x\" followed by enter to return to the main menu\n");
+        MenuText = stringBuilder.ToString();
+
+        ValidOptions.Add("e");
+        ValidOptions.Add("d");
+    }
+
+    protected override void GetNextMenu(string selectedMenuOption, string action = "")
     {
         switch (true)
         {
             case bool _ when int.TryParse(selectedMenuOption, out int parseInt):
                 Habit toUpdate = _existingHabits[parseInt - 1];
-                _newHabitMenu.Run(toUpdate);
+                if (action is "d")
+                {
+                    _database.Delete(toUpdate);
+                    Console.WriteLine("Habit deleted Press any key to return to the main menu.");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    _newHabitMenu.Run(toUpdate);
+                }
                 break;
-            case bool _ when selectedMenuOption.Equals("x"):
+            case bool _ when selectedMenuOption is "x":
                 break;
             default:
                 Run();

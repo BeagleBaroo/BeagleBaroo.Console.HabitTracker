@@ -28,12 +28,12 @@ public class MainMenu : AbstractMenu
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.Append($"Welcome to HabitTracker!\n");
         stringBuilder.Append($"Type \"a\" followed by enter to add a new habit log\n");
-        stringBuilder.Append($"Type \"v\" followed by enter to view and edit current habit logs\n");
+        stringBuilder.Append($"Type \"v\" followed by enter to view/edit/delete current habit logs\n");
         stringBuilder.Append($"Type \"x\" followed by enter to exit HabitTracker\n");
         MenuText = stringBuilder.ToString();
     }
 
-    protected override void GetNextMenu(string selectedMenuOption)
+    protected override void GetNextMenu(string selectedMenuOption, string action = "")
     {
         switch (selectedMenuOption)
         {

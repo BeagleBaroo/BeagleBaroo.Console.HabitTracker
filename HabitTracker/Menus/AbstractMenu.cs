@@ -27,8 +27,8 @@ public abstract class AbstractMenu
         return userInput;
     }
 
-    public abstract void Run(Habit habit = null);
+    public abstract void Run(Habit? habit = null);
     protected abstract void GetMenuText(string option = "");
-    protected abstract void GetNextMenu(string selectedMenuOption);
+    protected abstract void GetNextMenu(string selectedMenuOption, string action = "");
 }
 
