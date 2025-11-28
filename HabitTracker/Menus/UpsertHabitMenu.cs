@@ -1,25 +1,38 @@
 namespace HabitTracker.Menus;
 
-public class NewHabitMenu : AbstractMenu
+public class UpsertHabitMenu : AbstractMenu
 {
-    public NewHabitMenu(Database database) : base(database)
+    private Habit? _habit;
+    private Database _database;
+    public UpsertHabitMenu(Database database)
     {
-
+        _database = database;
     }
 
-    public override void Run()
+    public override void Run(Habit? habit = null)
     {
-        GetMenuText("habitType");
-        PrintMenuText();
-        string userInput = string.Empty;
+        _habit = habit ?? new Habit();
 
+        if (_habit.Id is 0)
+        {
+            GetMenuText("habitType");
+            PrintMenuText();
+        }
+
+        string userInput = string.Empty;
         if (userInput is not "x")
         {
-            ValidOptions.Add("w");
-            ValidOptions.Add("x");
-            userInput = GetUserInput(ValidOptions);
-            Habit habit = new Habit();
-            habit.Description = userInput;
+            if (_habit.Id is 0)
+            {
+                ValidOptions.Add("w");
+                ValidOptions.Add("x");
+                userInput = GetUserInput(ValidOptions);
+                _habit.Description = "water";
+            }
+            else
+            {
+                _habit.Description = "w";
+            }
 
             if (userInput is not "x")
             {
@@ -40,7 +53,7 @@ public class NewHabitMenu : AbstractMenu
 
                 if (userInput is not "x")
                 {
-                    habit.Quantity = parseInt;
+                    _habit.Quantity = parseInt;
 
                     GetMenuText("date");
                     PrintMenuText();
@@ -59,11 +72,20 @@ public class NewHabitMenu : AbstractMenu
 
                     if (userInput is not "x")
                     {
-                        habit.Date = parseDateTime.Date.ToString("ddd dd MMM yyyy");
-                        Database.Create(habit);
+                        if (userInput is "t")
+                        {
+                            parseDateTime = DateTime.UtcNow;
+                        }
+
+                        _habit.Date = parseDateTime.Date.ToString("ddd dd MMM yyyy");
+                        _database.Upsert(_habit);
                     }
                 }
             }
+
+            string returToMainMenu = $"Habit {(_habit.Id is 0 ? "added" : "updated")} Press any key to return to the main menu.";
+            Console.WriteLine(returToMainMenu);
+            Console.ReadKey();
         }
     }
 

@@ -36,14 +36,28 @@ public class Database
         }
     }
 
-    public void Create(Habit habit)
+    public void Upsert(Habit habit)
     {
-        string createString = "INSERT INTO habits (description, quantity, date) VALUES (@description, @quantity, @date)";
+        string commandString;
+        if (habit.Id > 0)
+        {
+            commandString = "UPDATE habits SET description = @description, quantity = @quantity, date = @date WHERE id = @Id";
 
-        SqliteCommand sqliteCommand = new SqliteCommand(createString);
+        }
+        else
+        {
+            commandString = "INSERT INTO habits (description, quantity, date) VALUES (@description, @quantity, @date)";
+        }
+
+        SqliteCommand sqliteCommand = new SqliteCommand(commandString);
         sqliteCommand.Parameters.AddWithValue("@description", habit.Description);
         sqliteCommand.Parameters.AddWithValue("@quantity", habit.Quantity);
         sqliteCommand.Parameters.AddWithValue("@date", habit.Date);
+
+        if (habit.Id > 0)
+        {
+            sqliteCommand.Parameters.AddWithValue("@Id", habit.Id);
+        }
 
         ExecuteNonQuery(sqliteCommand);
     }
@@ -53,7 +67,7 @@ public class Database
         List<Habit> habits = new List<Habit>();
         using (SqliteConnection sqliteConnection = new SqliteConnection(_connectionString))
         {
-            string readString = "SELECT * FROM Habit";
+            string readString = "SELECT * FROM Habits";
             SqliteCommand sqliteCommand = new SqliteCommand(readString, sqliteConnection);
             try
             {
@@ -80,23 +94,9 @@ public class Database
         return habits;
     }
 
-    public void Update(Habit habit)
-    {
-        string updateString = "UPDATE habits SET description = @description, quantity = @quantity, date = @date WHERE id = @Id";
-
-        SqliteCommand sqliteCommand = new SqliteCommand(updateString);
-        sqliteCommand.Parameters.AddWithValue("@description", habit.Description);
-        sqliteCommand.Parameters.AddWithValue("@quantity", habit.Quantity);
-        sqliteCommand.Parameters.AddWithValue("@date", habit.Date);
-        sqliteCommand.Parameters.AddWithValue("@Id", habit.Id);
-
-        ExecuteNonQuery(sqliteCommand);
-    }
-
     public void Delete(Habit habit)
     {
         string deleteString = "DELETE Habit WHERE id = @Id";
-
         SqliteCommand sqliteCommand = new SqliteCommand(deleteString);
         sqliteCommand.Parameters.AddWithValue("@Id", habit.Id);
 

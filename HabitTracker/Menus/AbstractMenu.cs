@@ -2,10 +2,8 @@
 
 public abstract class AbstractMenu
 {
-    protected Database Database;
-    public AbstractMenu(Database database)
+    public AbstractMenu()
     {
-        Database = database;
         ValidOptions = new List<string>();
     }
     protected string? MenuText { get; set; }
@@ -29,7 +27,7 @@ public abstract class AbstractMenu
         return userInput;
     }
 
-    public abstract void Run();
+    public abstract void Run(Habit habit = null);
     protected abstract void GetMenuText(string option = "");
     protected abstract void GetNextMenu(string selectedMenuOption);
 }

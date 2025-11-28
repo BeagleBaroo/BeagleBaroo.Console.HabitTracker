@@ -2,19 +2,19 @@ namespace HabitTracker.Menus;
 
 public class MainMenu : AbstractMenu
 {
-    private NewHabitMenu _newHabitMenu;
-    private EditHabitMenu _editHabitMenu;
-    public MainMenu(Database database) : base(database)
+    private UpsertHabitMenu _newHabitMenu;
+    private ExistingHabitMenu _editHabitMenu;
+    public MainMenu(Database database)
     {
         ValidOptions.Add("a");
         ValidOptions.Add("v");
         ValidOptions.Add("x");
 
-        _newHabitMenu = new NewHabitMenu(database);
-        _editHabitMenu = new EditHabitMenu(database);
+        _newHabitMenu = new UpsertHabitMenu(database);
+        _editHabitMenu = new ExistingHabitMenu(database, _newHabitMenu);
     }
 
-    public override void Run()
+    public override void Run(Habit? habit = null)
     {
         GetMenuText();
         PrintMenuText();
