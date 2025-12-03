@@ -23,13 +23,15 @@ public class ExistingHabitMenu : AbstractMenu
 
         ValidOptions.Add("x");
         string selectedMenuOption = GetUserInput(ValidOptions);
+        if (selectedMenuOption is not "x")
+        {
+            ValidOptions.RemoveAll(vo => vo is not "x");
+            GetActionText();
+            PrintMenuText();
+            string action = GetUserInput(ValidOptions);
 
-        ValidOptions.RemoveAll(vo => vo is not "x");
-        GetActionText();
-        PrintMenuText();
-        string action = GetUserInput(ValidOptions);
-
-        GetNextMenu(selectedMenuOption, action);
+            GetNextMenu(selectedMenuOption, action);
+        }
     }
 
     protected override void GetMenuText(string option = "")
